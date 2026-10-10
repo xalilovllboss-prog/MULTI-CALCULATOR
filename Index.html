@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ko'p Funksiyali Kalkulyatorlar To'plami</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f4f7f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    /* Navigatsiya tugmalari */
+    .menu {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .menu button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .menu button:hover {
+      background-color: #0056b3;
+    }
+    /* Kalkulyator oynalari */
+    .calc-card {
+      display: none;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .active {
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .btn-calc {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+    /* Oddiy kalkulyator tugmalari */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .grid button {
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      background: #e0e0e0;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .grid button:hover {
+      background: #d0d0d0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Barcha Kalkulyatorlar Bitta Joyda</h1>
+
+  <!-- Menyu (Tugmalar) -->
+  <div class="menu">
+    <button onclick="openCalc('math')">Oddiy Math</button>
+    <button onclick="openCalc('bmi')">BMI (Vazn)</button>
+    <button onclick="openCalc('gpa')">GPA (O'rtacha Ball)</button>
+  </div>
+
+  <!-- 1. Oddiy Kalkulyator -->
+  <div id="math" class="calc-card active">
+    <h3>Oddiy Matematik Kalkulyator</h3>
+    <input type="text" id="display" readonly>
+    <div class="grid">
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button onclick="press('/')">/</button>
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button onclick="press('*')">*</button>
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button onclick="press('-')">-</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="calculateMath()">=</button>
+      <button onclick="press('+')">+</button>
+    </div>
+  </div>
+
+  <!-- 2. BMI Kalkulyator -->
+  <div id="bmi" class="calc-card">
+    <h3>BMI (Tana Vazni Indeksi)</h3>
+    <label>Bo'yingiz (cm):</label>
+    <input type="number" id="height" placeholder="Masalan: 175">
+    <label>Vazningiz (kg):</label>
+    <input type="number" id="weight" placeholder="Masalan: 70">
+    <button class="btn-calc" onclick="calcBMI()">Hisoblash</button>
+    <div id="bmi-result" class="result"></div>
+  </div>
+
+  <!-- 3. GPA Kalkulyator -->
+  <div id="gpa" class="calc-card">
+    <h3>GPA (O'rtacha Ball) Kalkulyatori</h3>
+    <label>3 ta fan bahosini kiriting (vergul bilan):</label>
+    <input type="text" id="grades" placeholder="Masalan: 5, 4, 5">
+    <button class="btn-calc" onclick="calcGPA()">GPA Hisoblash</button>
+    <div id="gpa-result" class="result"></div>
+  </div>
+
+  <script>
+    // Tablarni almashtirish funksiyasi
+    function openCalc(id) {
+      document.querySelectorAll('.calc-card').forEach(card => card.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Math Kalkulyator mantiqi
+    function press(val) {
+      document.getElementById('display').value += val;
+    }
+    function clearDisplay() {
+      document.getElementById('display').value = '';
+    }
+    function calculateMath() {
+      try {
+        document.getElementById('display').value = eval(document.getElementById('display').value);
+      } catch {
+        alert('Xato ifoda!');
+      }
+    }
+
+    // BMI Mantiqi
+    function calcBMI() {
+      let h = document.getElementById('height').value / 100;
+      let w = document.getElementById('weight').value;
+      if (h > 0 && w > 0) {
+        let bmi = (w / (h * h)).toFixed(1);
+        document.getElementById('bmi-result').innerText = "Sizning BMI ko'rsatkichingiz: " + bmi;
+      } else {
+        alert("Iltimos, to'g'ri ma'lumot kiriting!");
+      }
+    }
+
+    // GPA Mantiqi
+    function calcGPA() {
+      let inputs = document.getElementById('grades').value.split(',').map(Number);
+      let sum = inputs.reduce((a, b) => a + b, 0);
+      if (inputs.length > 0 && !isNaN(sum)) {
+        let avg = (sum / inputs.length).toFixed(2);
+        document.getElementById('gpa-result').innerText = "O'rtacha ball (GPA): " + avg;
+      } else {
+        alert("Baholarni to'g'ri kiriting!");
+      }
+    }
+  </script>
+</body>
+</html>
